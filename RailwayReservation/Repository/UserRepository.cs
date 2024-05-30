@@ -5,18 +5,19 @@ using RailwayReservation.Model.Domain;
 
 namespace RailwayReservation.Repository
 {
-    public class StationRepository : IStationRepository
+    public class UserRepository : IUserRepository
     {
         private readonly RailwayReservationdbContext _context;
 
-        public StationRepository(RailwayReservationdbContext context)
+        public UserRepository(RailwayReservationdbContext context)
         {
             _context = context;
         }
-        public async Task<Station> Add(Station item)
+        public async Task<User> Add(User item)
         {
-            try{
-                _context.Stations.Add(item);
+            try
+            {
+                _context.Users.Add(item);
                 await _context.SaveChangesAsync();
                 return item;
             }
@@ -26,18 +27,18 @@ namespace RailwayReservation.Repository
             }
         }
 
-        public async Task<Station> Delete(Guid key)
+        public async Task<User> Delete(Guid key)
         {
             try
             {
-                var station = await _context.Stations.FindAsync(key);
-                if (station == null)
+                var user = await _context.Users.FindAsync(key);
+                if (user == null)
                 {
-                    throw new Exception("Station not found");
+                    return null;
                 }
-                _context.Stations.Remove(station);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
-                return station;
+                return user;
             }
             catch (Exception e)
             {
@@ -45,12 +46,12 @@ namespace RailwayReservation.Repository
             }
         }
 
-        public async Task<Station> Get(Guid key)
+        public async Task<User> Get(Guid key)
         {
             try
             {
-                var station = await _context.Stations.FindAsync(key);
-                return station;
+                var user = await _context.Users.FindAsync(key);
+                return user;
             }
             catch (Exception e)
             {
@@ -58,11 +59,11 @@ namespace RailwayReservation.Repository
             }
         }
 
-        public async Task<IEnumerable<Station>> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
             try
             {
-                return await _context.Stations.ToListAsync();
+                return await _context.Users.ToListAsync();
             }
             catch (Exception e)
             {
@@ -70,7 +71,7 @@ namespace RailwayReservation.Repository
             }
         }
 
-        public async Task<Station> Update(Station item)
+        public async Task<User> Update(User item)
         {
             try
             {

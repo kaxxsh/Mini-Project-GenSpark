@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Configuration.UserSecrets;
-
-namespace RailwayReservation.Model.Domain
+﻿namespace RailwayReservation.Model.Dtos.Auth.User
 {
-    public class User
+    public class UserResponseDto
     {
         public Guid UserId { get; set; }
         public string UserName { get; set; }

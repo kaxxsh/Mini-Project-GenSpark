@@ -39,12 +39,14 @@ builder.Services.AddDbContext<RailwayReservationdbContext>(options => options.Us
 
 // Add repositories
 builder.Services.AddScoped<IStationRepository, StationRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 // Add services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStationService, StationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 // Configure Identity

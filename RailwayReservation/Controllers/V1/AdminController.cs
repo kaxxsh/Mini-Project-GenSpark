@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
+using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Train.Station;
 using RailwayReservation.Model.Error;
 
@@ -11,17 +12,39 @@ namespace RailwayReservation.Controllers.V1
     public class AdminController : ControllerBase
     {
         private readonly IStationService _station;
+        private readonly IUserService _user;
 
-        public AdminController(IStationService station)
+        public AdminController(IStationService station, IUserService user)
         {
             _station = station;
+            _user = user;
         }
 
+        [HttpPut]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UserAddMoney(Guid id, double Amount)
+        {
+            try
+            {
+                var data = await _user.AddMoney(id, Amount);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
         [HttpPost]
+        [Route("Station")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Add(StationRequestDto station)
+        public async Task<IActionResult> AddStation(StationRequestDto station)
         {
             try
             {
@@ -33,12 +56,13 @@ namespace RailwayReservation.Controllers.V1
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
         [HttpPut]
-        [Route("{id}")]
+        [Route("Station/{id}")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Update(Guid id, StationRequestDto station)
+        public async Task<IActionResult> UpdateStation(Guid id, StationRequestDto station)
         {
             try
             {
@@ -50,12 +74,13 @@ namespace RailwayReservation.Controllers.V1
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
         [HttpDelete]
-        [Route("{id}")]
+        [Route("Station/{id}")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteStation(Guid id)
         {
             try
             {
@@ -67,5 +92,6 @@ namespace RailwayReservation.Controllers.V1
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
     }
 }
