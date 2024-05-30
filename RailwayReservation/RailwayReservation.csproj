@@ -27,10 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\Repository\" />
-    <Folder Include="Model\Enum\" />
     <Folder Include="Logs\" />
-    <Folder Include="Repository\" />
   </ItemGroup>
 
 </Project>

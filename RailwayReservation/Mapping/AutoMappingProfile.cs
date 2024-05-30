@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using RailwayReservation.Model.Domain;
+using RailwayReservation.Model.Dtos.Train.Station;
 
 namespace RailwayReservation.Mapping
 {
@@ -6,7 +8,9 @@ namespace RailwayReservation.Mapping
     {
         public AutoMappingProfile()
         {
-            
+            CreateMap<StationRequestDto, Station>().ReverseMap();
+            CreateMap<Station, StationResponseDto>().ReverseMap();
+            CreateMap<Station, StationDto>().ReverseMap();
         }
     }
 }

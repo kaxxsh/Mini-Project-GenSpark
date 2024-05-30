@@ -5,9 +5,12 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using project.Context;
 using RailwayReservation.Context;
+using RailwayReservation.Interface.Repository;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Mapping;
 using RailwayReservation.Middleware;
+using RailwayReservation.Model.Domain;
+using RailwayReservation.Repository;
 using RailwayReservation.Services;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -32,9 +35,16 @@ builder.Services.AddAutoMapper(typeof(AutoMappingProfile));
 builder.Services.AddDbContext<authContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultAuthConnection")));
 builder.Services.AddDbContext<RailwayReservationdbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+
+// Add repositories
+builder.Services.AddScoped<IStationRepository, StationRepository>();
+
+
 // Add services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IStationService, StationService>();
 
 
 // Configure Identity

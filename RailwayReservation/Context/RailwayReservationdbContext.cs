@@ -10,5 +10,6 @@ namespace RailwayReservation.Context
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Station> Stations { get; set; }
     }
 }
