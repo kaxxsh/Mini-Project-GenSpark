@@ -13,6 +13,7 @@ namespace RailwayReservation.Context
         public DbSet<Station> Stations { get; set; }
         public DbSet<Train> Trains { get; set; }
         public DbSet<Model.Domain.Route> Routes { get; set; }
+        public DbSet<Seat> Seats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,11 @@ namespace RailwayReservation.Context
                 .HasOne(t => t.TrainRoute)
                 .WithOne()
                 .HasForeignKey<Model.Domain.Route>(r => r.TrainId);
+
+            modelBuilder.Entity<Train>()
+                .HasMany(t => t.Seats)
+                .WithOne(s => s.Train)
+                .HasForeignKey(s => s.TrainId);
 
             // Configuring the Station entity
             modelBuilder.Entity<Station>()

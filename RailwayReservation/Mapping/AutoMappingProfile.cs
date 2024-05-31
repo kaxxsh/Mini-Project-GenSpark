@@ -1,32 +1,28 @@
 ﻿using AutoMapper;
 using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Auth.User;
-using RailwayReservation.Model.Dtos.Train;
 using RailwayReservation.Model.Dtos.Train.Route;
 using RailwayReservation.Model.Dtos.Train.Station;
-using System.Linq;
+using RailwayReservation.Model.Dtos.Train;
+using RailwayReservation.Model.Dtos.Train.Seat;
 
-namespace RailwayReservation.Mapping
+public class AutoMappingProfile : Profile
 {
-    public class AutoMappingProfile : Profile
+    public AutoMappingProfile()
     {
-        public AutoMappingProfile()
-        {
-            CreateMap<StationRequestDto, Station>().ReverseMap();
-            CreateMap<Station, StationResponseDto>().ReverseMap();
-            CreateMap<Station, StationDto>().ReverseMap();
-            CreateMap<User, UserRequestDto>().ReverseMap();
-            CreateMap<User, UserResponseDto>().ReverseMap();
+        CreateMap<User, UserResponseDto>();
+        CreateMap<UserRequestDto, User>();
 
-            CreateMap<Model.Domain.Route, RouteResponseDto>()
-                .ForMember(dest => dest.Stations, opt => opt.MapFrom(src => src.Stations));
-            CreateMap<RouteRequestDto, Model.Domain.Route>()
-                .ForMember(dest => dest.Stations, opt => opt.Ignore());
+        CreateMap<Station, StationResponseDto>();
+        CreateMap<StationRequestDto, Station>();
 
-            CreateMap<Train, TrainResponseDto>()
-                .ForMember(dest => dest.TrainRoute, opt => opt.MapFrom(src => src.TrainRoute));
-            CreateMap<TrainRequestDto, Train>()
-                .ForMember(dest => dest.TrainRoute, opt => opt.MapFrom(src => src.TrainRoute));
-        }
+        CreateMap<RailwayReservation.Model.Domain.Route, RouteResponseDto>();
+        CreateMap<RouteRequestDto, RailwayReservation.Model.Domain.Route>();
+
+        CreateMap<Train, TrainResponseDto>();
+        CreateMap<TrainRequestDto, Train>();
+        CreateMap<Seat, SeatResponseDto>(); 
+        CreateMap<Train, TrainResponseDto>()
+            .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats));
     }
 }

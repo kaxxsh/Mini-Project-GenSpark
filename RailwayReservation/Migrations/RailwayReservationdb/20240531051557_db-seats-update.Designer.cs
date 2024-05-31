@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RailwayReservation.Context;
 
@@ -11,9 +12,11 @@ using RailwayReservation.Context;
 namespace RailwayReservation.Migrations.RailwayReservationdb
 {
     [DbContext(typeof(RailwayReservationdbContext))]
-    partial class RailwayReservationdbContextModelSnapshot : ModelSnapshot
+    [Migration("20240531051557_db-seats-update")]
+    partial class dbseatsupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,6 +120,12 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
 
                     b.Property<int>("Fare")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<int>("TotalSeats")
                         .HasColumnType("int");

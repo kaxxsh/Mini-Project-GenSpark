@@ -7,7 +7,6 @@ using project.Context;
 using RailwayReservation.Context;
 using RailwayReservation.Interface.Repository;
 using RailwayReservation.Interface.Service;
-using RailwayReservation.Mapping;
 using RailwayReservation.Middleware;
 using RailwayReservation.Repository;
 using RailwayReservation.Services;

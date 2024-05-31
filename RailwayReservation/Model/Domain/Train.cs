@@ -1,4 +1,5 @@
 ﻿using RailwayReservation.Model.Enum.Train;
+using System.ComponentModel.DataAnnotations;
 
 namespace RailwayReservation.Model.Domain
 {
@@ -13,6 +14,6 @@ namespace RailwayReservation.Model.Domain
         public int AvailableSeats { get; set; }
         public int Fare { get; set; }
         public Route TrainRoute { get; set; }
+        public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     }
-
 }

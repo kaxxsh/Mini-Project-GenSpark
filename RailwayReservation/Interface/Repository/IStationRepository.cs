@@ -4,5 +4,6 @@ namespace RailwayReservation.Interface.Repository
 {
     public interface IStationRepository:IRepository<Guid, Station>
     {
+
     }
 }

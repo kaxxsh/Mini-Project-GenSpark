@@ -1,23 +1,26 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RailwayReservation.Interface.Repository;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Train;
-using System;
+using RailwayReservation.Model.Enum.Train;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RailwayReservation.Services
 {
     public class TrainService : ITrainService
     {
-        private readonly ITrainRepository _train;
+        private readonly ITrainRepository _trainRepository;
         private readonly IStationRepository _stationRepository;
         private readonly IMapper _mapper;
 
-        public TrainService(ITrainRepository train, IStationRepository stationRepository, IMapper mapper)
+        public TrainService(ITrainRepository trainRepository, IStationRepository stationRepository, IMapper mapper)
         {
-            _train = train;
+            _trainRepository = trainRepository;
             _stationRepository = stationRepository;
             _mapper = mapper;
         }
@@ -26,17 +29,17 @@ namespace RailwayReservation.Services
         {
             try
             {
-                var data = _mapper.Map<Train>(trainRequestDto);
-                data.AvailableSeats = data.TotalSeats;
+                var train = _mapper.Map<Train>(trainRequestDto);
+                train.AvailableSeats = train.TotalSeats;
 
-                // Process the stations separately
-                data.TrainRoute.Stations.Clear();
+                // Process stations separately
+                train.TrainRoute.Stations = new List<Station>();
                 foreach (var stationId in trainRequestDto.TrainRoute.StationIds)
                 {
                     var station = await _stationRepository.Get(stationId);
                     if (station != null)
                     {
-                        data.TrainRoute.Stations.Add(station);
+                        train.TrainRoute.Stations.Add(station);
                     }
                     else
                     {
@@ -53,29 +56,30 @@ namespace RailwayReservation.Services
                     throw new Exception("Source or Destination station not found");
                 }
 
-                data.TrainRoute.SourceStation = sourceStation;
-                data.TrainRoute.DestinationStation = destinationStation;
+                train.TrainRoute.SourceStation = sourceStation;
+                train.TrainRoute.DestinationStation = destinationStation;
 
-                data = await _train.Add(data);
-                return _mapper.Map<TrainResponseDto>(data);
+                train.Seats = AddSeats(train, trainRequestDto.TotalSeats);
+                train = await _trainRepository.Add(train);
+
+                return _mapper.Map<TrainResponseDto>(train);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error adding train: {ex.Message}");
             }
         }
-
 
         public async Task<TrainResponseDto> Delete(Guid id)
         {
             try
             {
-                var data = await _train.Delete(id);
-                return _mapper.Map<TrainResponseDto>(data);
+                var train = await _trainRepository.Delete(id);
+                return _mapper.Map<TrainResponseDto>(train);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error deleting train: {ex.Message}");
             }
         }
 
@@ -83,12 +87,12 @@ namespace RailwayReservation.Services
         {
             try
             {
-                var data = await _train.GetAll();
-                return _mapper.Map<List<TrainResponseDto>>(data);
+                var trains = await _trainRepository.GetAll();
+                return _mapper.Map<List<TrainResponseDto>>(trains);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error fetching trains: {ex.Message}");
             }
         }
 
@@ -96,12 +100,12 @@ namespace RailwayReservation.Services
         {
             try
             {
-                var data = await _train.Get(id);
-                return _mapper.Map<TrainResponseDto>(data);
+                var train = await _trainRepository.Get(id);
+                return _mapper.Map<TrainResponseDto>(train);
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error fetching train: {ex.Message}");
             }
         }
 
@@ -109,39 +113,114 @@ namespace RailwayReservation.Services
         {
             try
             {
-                var existingTrain = await _train.Get(id);
-                if (existingTrain == null)
+                var train = await _trainRepository.Get(id);
+                if (train == null)
                 {
                     throw new Exception("Train not found");
                 }
 
-                // Update train details
-                _mapper.Map(trainRequestDto, existingTrain);
+                _mapper.Map(trainRequestDto, train);
+                train.Seats = UpdateSeats(train, trainRequestDto.TotalSeats);
 
-                // Handle the route and stations update manually
-                existingTrain.TrainRoute.Source = trainRequestDto.TrainRoute.Source;
-                existingTrain.TrainRoute.Destination = trainRequestDto.TrainRoute.Destination;
-                existingTrain.TrainRoute.Distance = trainRequestDto.TrainRoute.Distance;
-                existingTrain.TrainRoute.Duration = trainRequestDto.TrainRoute.Duration;
+                await _trainRepository.Update(train);
 
-                // Clear existing stations and add new ones
-                existingTrain.TrainRoute.Stations.Clear();
-                foreach (var stationId in trainRequestDto.TrainRoute.StationIds)
-                {
-                    var station = await _stationRepository.Get(stationId);
-                    if (station != null)
-                    {
-                        existingTrain.TrainRoute.Stations.Add(station);
-                    }
-                }
-
-                existingTrain = await _train.Update(existingTrain);
-                return _mapper.Map<TrainResponseDto>(existingTrain);
+                return _mapper.Map<TrainResponseDto>(train);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new Exception("The train record you attempted to update was modified or deleted by another process. Please reload the record and try again.");
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new Exception($"Error updating train: {ex.Message}");
             }
+        }
+
+        private ICollection<Seat> AddSeats(Train train, int totalSeats)
+        {
+            var seats = new List<Seat>();
+            char currentRow = 'A';
+            int currentSeatNumber = 1;
+
+            for (int i = 0; i < totalSeats; i++)
+            {
+                if (currentSeatNumber > 10)
+                {
+                    currentSeatNumber = 1;
+                    currentRow++;
+                }
+
+                seats.Add(new Seat
+                {
+                    SeatId = Guid.NewGuid(),
+                    SeatNumber = $"{currentRow}{currentSeatNumber}",
+                    Status = SeatStatus.Available,
+                    TrainId = train.TrainId
+                });
+
+                currentSeatNumber++;
+            }
+
+            return seats;
+        }
+
+        private ICollection<Seat> UpdateSeats(Train train, int newTotalSeats)
+        {
+            var seats = train.Seats.ToList();
+            int currentTotalSeats = seats.Count;
+
+            if (newTotalSeats > currentTotalSeats)
+            {
+                char currentRow;
+                int currentSeatNumber;
+
+                if (seats.Any())
+                {
+                    currentRow = seats.Max(s => s.SeatNumber[0]);
+                    currentSeatNumber = int.Parse(seats.Max(s => s.SeatNumber.Substring(1))) + 1;
+                }
+                else
+                {
+                    currentRow = 'A';
+                    currentSeatNumber = 1;
+                }
+
+                for (int i = 0; i < newTotalSeats - currentTotalSeats; i++)
+                {
+                    if (currentSeatNumber > 10)
+                    {
+                        currentSeatNumber = 1;
+                        currentRow++;
+                    }
+
+                    seats.Add(new Seat
+                    {
+                        SeatId = Guid.NewGuid(),
+                        SeatNumber = $"{currentRow}{currentSeatNumber}",
+                        Status = SeatStatus.Available,
+                        TrainId = train.TrainId
+                    });
+
+                    currentSeatNumber++;
+                }
+            }
+            else if (newTotalSeats < currentTotalSeats)
+            {
+                var seatsToRemove = seats
+                                        .Where(s => s.Status == SeatStatus.Available)
+                                        .OrderByDescending(s => s.SeatNumber)
+                                        .Take(currentTotalSeats - newTotalSeats)
+                                        .ToList();
+
+                foreach (var seat in seatsToRemove)
+                {
+                    seats.Remove(seat);
+                }
+            }
+
+            train.TotalSeats = newTotalSeats;
+            train.AvailableSeats = seats.Count(s => s.Status == SeatStatus.Available);
+            return seats;
         }
     }
 }
