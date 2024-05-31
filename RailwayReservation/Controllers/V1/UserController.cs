@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
+using RailwayReservation.Migrations.RailwayReservationdb;
 using RailwayReservation.Model.Domain;
+using RailwayReservation.Model.Dtos.Train;
 using RailwayReservation.Model.Dtos.Train.Station;
 using RailwayReservation.Model.Error;
 
@@ -13,11 +15,13 @@ namespace RailwayReservation.Controllers.V1
     {
         private readonly IStationService _station;
         private readonly IUserService _user;
+        private readonly ITrainService _train;
 
-        public UserController(IStationService station, IUserService user)
+        public UserController(IStationService station, IUserService user, ITrainService train)
         {
             _station = station;
             _user = user;
+            _train = train;
         }
 
         [HttpGet]
@@ -90,6 +94,40 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
-        
+        [HttpGet]
+        [Route("Train")]
+        [ProducesResponseType(typeof(List<TrainResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllTrain()
+        {
+            try
+            {
+                var data = await _train.GetAll();
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Train/{id}")]
+        [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTrain(Guid id)
+        {
+            try
+            {
+                var data = await _train.GetById(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

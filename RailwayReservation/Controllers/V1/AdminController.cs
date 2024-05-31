@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Model.Domain;
+using RailwayReservation.Model.Dtos.Train;
 using RailwayReservation.Model.Dtos.Train.Station;
 using RailwayReservation.Model.Error;
 
@@ -13,11 +13,13 @@ namespace RailwayReservation.Controllers.V1
     {
         private readonly IStationService _station;
         private readonly IUserService _user;
+        private readonly ITrainService _train;
 
-        public AdminController(IStationService station, IUserService user)
+        public AdminController(IStationService station, IUserService user, ITrainService train)
         {
             _station = station;
             _user = user;
+            _train = train;
         }
 
         [HttpPut]
@@ -85,6 +87,60 @@ namespace RailwayReservation.Controllers.V1
             try
             {
                 var data = await _station.Delete(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("Train")]
+        [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddTrain(TrainRequestDto train)
+        {
+            try
+            {
+                var data = await _train.Add(train);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("Train/{id}")]
+        [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateTrain(Guid id, TrainRequestDto train)
+        {
+            try
+            {
+                var data = await _train.Update(id, train);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("Train/{id}")]
+        [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteTrain(Guid id)
+        {
+            try
+            {
+                var data = await _train.Delete(id);
                 return Ok(data);
             }
             catch (Exception ex)

@@ -9,7 +9,6 @@ using RailwayReservation.Interface.Repository;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Mapping;
 using RailwayReservation.Middleware;
-using RailwayReservation.Model.Domain;
 using RailwayReservation.Repository;
 using RailwayReservation.Services;
 using System.Text;
@@ -40,6 +39,7 @@ builder.Services.AddDbContext<RailwayReservationdbContext>(options => options.Us
 // Add repositories
 builder.Services.AddScoped<IStationRepository, StationRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITrainRepository, TrainRepository>();
 
 
 // Add services
@@ -47,6 +47,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITrainService, TrainService>();
 
 
 // Configure Identity

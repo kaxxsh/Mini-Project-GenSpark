@@ -2,6 +2,9 @@
 using RailwayReservation.Context;
 using RailwayReservation.Interface.Repository;
 using RailwayReservation.Model.Domain;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RailwayReservation.Repository
 {
@@ -13,9 +16,11 @@ namespace RailwayReservation.Repository
         {
             _context = context;
         }
+
         public async Task<Station> Add(Station item)
         {
-            try{
+            try
+            {
                 _context.Stations.Add(item);
                 await _context.SaveChangesAsync();
                 return item;
@@ -77,6 +82,20 @@ namespace RailwayReservation.Repository
                 _context.Entry(item).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return item;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Station>> GetStationsByIds(List<Guid> stationIds)
+        {
+            try
+            {
+                return await _context.Stations
+                    .Where(s => stationIds.Contains(s.StationId))
+                    .ToListAsync();
             }
             catch (Exception e)
             {
