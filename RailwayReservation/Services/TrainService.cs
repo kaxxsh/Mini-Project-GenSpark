@@ -1,14 +1,12 @@
 ﻿
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using RailwayReservation.Context;
 using RailwayReservation.Interface.Repository;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Train;
 using RailwayReservation.Model.Enum.Train;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RailwayReservation.Services
 {
@@ -17,12 +15,14 @@ namespace RailwayReservation.Services
         private readonly ITrainRepository _trainRepository;
         private readonly IStationRepository _stationRepository;
         private readonly IMapper _mapper;
+        private readonly RailwayReservationdbContext _context;
 
-        public TrainService(ITrainRepository trainRepository, IStationRepository stationRepository, IMapper mapper)
+        public TrainService(ITrainRepository trainRepository, IStationRepository stationRepository, IMapper mapper,RailwayReservationdbContext context)
         {
             _trainRepository = trainRepository;
             _stationRepository = stationRepository;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<TrainResponseDto> Add(TrainRequestDto trainRequestDto)
@@ -118,9 +118,7 @@ namespace RailwayReservation.Services
                 {
                     throw new Exception("Train not found");
                 }
-
                 _mapper.Map(trainRequestDto, train);
-                train.Seats = UpdateSeats(train, trainRequestDto.TotalSeats);
 
                 await _trainRepository.Update(train);
 
@@ -161,65 +159,6 @@ namespace RailwayReservation.Services
                 currentSeatNumber++;
             }
 
-            return seats;
-        }
-
-        private ICollection<Seat> UpdateSeats(Train train, int newTotalSeats)
-        {
-            var seats = train.Seats.ToList();
-            int currentTotalSeats = seats.Count;
-
-            if (newTotalSeats > currentTotalSeats)
-            {
-                char currentRow;
-                int currentSeatNumber;
-
-                if (seats.Any())
-                {
-                    currentRow = seats.Max(s => s.SeatNumber[0]);
-                    currentSeatNumber = int.Parse(seats.Max(s => s.SeatNumber.Substring(1))) + 1;
-                }
-                else
-                {
-                    currentRow = 'A';
-                    currentSeatNumber = 1;
-                }
-
-                for (int i = 0; i < newTotalSeats - currentTotalSeats; i++)
-                {
-                    if (currentSeatNumber > 10)
-                    {
-                        currentSeatNumber = 1;
-                        currentRow++;
-                    }
-
-                    seats.Add(new Seat
-                    {
-                        SeatId = Guid.NewGuid(),
-                        SeatNumber = $"{currentRow}{currentSeatNumber}",
-                        Status = SeatStatus.Available,
-                        TrainId = train.TrainId
-                    });
-
-                    currentSeatNumber++;
-                }
-            }
-            else if (newTotalSeats < currentTotalSeats)
-            {
-                var seatsToRemove = seats
-                                        .Where(s => s.Status == SeatStatus.Available)
-                                        .OrderByDescending(s => s.SeatNumber)
-                                        .Take(currentTotalSeats - newTotalSeats)
-                                        .ToList();
-
-                foreach (var seat in seatsToRemove)
-                {
-                    seats.Remove(seat);
-                }
-            }
-
-            train.TotalSeats = newTotalSeats;
-            train.AvailableSeats = seats.Count(s => s.Status == SeatStatus.Available);
             return seats;
         }
     }
