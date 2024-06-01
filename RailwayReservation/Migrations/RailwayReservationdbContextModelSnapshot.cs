@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RailwayReservation.Context;
 
 #nullable disable
 
-namespace RailwayReservation.Migrations.RailwayReservationdb
+namespace RailwayReservation.Migrations
 {
     [DbContext(typeof(RailwayReservationdbContext))]
-    [Migration("20240531074452_db-seats-update-v3")]
-    partial class dbseatsupdatev3
+    partial class RailwayReservationdbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +21,34 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RailwayReservation.Model.Domain.Passenger", b =>
+                {
+                    b.Property<Guid>("PassengerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("SeatId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PassengerId");
+
+                    b.HasIndex("SeatId");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("Passengers");
+                });
 
             modelBuilder.Entity("RailwayReservation.Model.Domain.Route", b =>
                 {
@@ -62,9 +87,6 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                 {
                     b.Property<Guid>("SeatId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("PassengerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SeatNumber")
@@ -107,6 +129,52 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                     b.HasKey("StationId");
 
                     b.ToTable("Stations");
+                });
+
+            modelBuilder.Entity("RailwayReservation.Model.Domain.Ticket", b =>
+                {
+                    b.Property<Guid>("TicketId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Destination")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("JourneyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Source")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TicketStatus")
+                        .HasColumnType("int");
+
+                    b.Property<double>("TotalAmount")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("TrainId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("TicketId");
+
+                    b.HasIndex("Destination");
+
+                    b.HasIndex("Source");
+
+                    b.HasIndex("TrainId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("RailwayReservation.Model.Domain.Train", b =>
@@ -183,6 +251,22 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                     b.ToTable("RouteStations", (string)null);
                 });
 
+            modelBuilder.Entity("RailwayReservation.Model.Domain.Passenger", b =>
+                {
+                    b.HasOne("RailwayReservation.Model.Domain.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RailwayReservation.Model.Domain.Ticket", null)
+                        .WithMany("Passengers")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Seat");
+                });
+
             modelBuilder.Entity("RailwayReservation.Model.Domain.Route", b =>
                 {
                     b.HasOne("RailwayReservation.Model.Domain.Station", "DestinationStation")
@@ -219,6 +303,41 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                     b.Navigation("Train");
                 });
 
+            modelBuilder.Entity("RailwayReservation.Model.Domain.Ticket", b =>
+                {
+                    b.HasOne("RailwayReservation.Model.Domain.Station", "DestinationStation")
+                        .WithMany()
+                        .HasForeignKey("Destination")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RailwayReservation.Model.Domain.Station", "SourceStation")
+                        .WithMany()
+                        .HasForeignKey("Source")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RailwayReservation.Model.Domain.Train", "Train")
+                        .WithMany()
+                        .HasForeignKey("TrainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RailwayReservation.Model.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DestinationStation");
+
+                    b.Navigation("SourceStation");
+
+                    b.Navigation("Train");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RouteStation", b =>
                 {
                     b.HasOne("RailwayReservation.Model.Domain.Route", null)
@@ -232,6 +351,11 @@ namespace RailwayReservation.Migrations.RailwayReservationdb
                         .HasForeignKey("StationsStationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("RailwayReservation.Model.Domain.Ticket", b =>
+                {
+                    b.Navigation("Passengers");
                 });
 
             modelBuilder.Entity("RailwayReservation.Model.Domain.Train", b =>

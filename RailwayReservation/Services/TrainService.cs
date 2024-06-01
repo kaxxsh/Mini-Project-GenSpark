@@ -109,6 +109,27 @@ namespace RailwayReservation.Services
             }
         }
 
+        public async Task<List<TrainResponseDto>> GetTrain(string From, string To, DateTime date)
+        {
+            try
+            {
+                var trains = await _context.Trains
+                    .Include(t => t.TrainRoute)
+                    .Include(t => t.TrainRoute.Stations)
+                    .Include(t => t.TrainRoute.SourceStation)
+                    .Include(t => t.TrainRoute.DestinationStation)
+                    .Include(t => t.Seats)
+                    .Where(t => t.TrainRoute.SourceStation.StationName == From && t.TrainRoute.DestinationStation.StationName == To)
+                    .ToListAsync();
+
+                return _mapper.Map<List<TrainResponseDto>>(trains);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching trains: {ex.Message}");
+            }
+        }
+
         public async Task<TrainResponseDto> Update(Guid id, TrainRequestDto trainRequestDto)
         {
             try

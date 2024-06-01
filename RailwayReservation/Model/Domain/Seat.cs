@@ -8,7 +8,6 @@ namespace RailwayReservation.Model.Domain
         public string SeatNumber { get; set; }
         public Guid TrainId { get; set; }
         public Train Train { get; set; }
-        public Guid? PassengerId { get; set; } // Nullable to allow unassigned seats
         public SeatStatus Status { get; set; }
     }
 }

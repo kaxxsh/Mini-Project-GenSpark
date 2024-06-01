@@ -1,5 +1,6 @@
 ﻿using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Auth.User;
+using RailwayReservation.Model.Dtos.Ticket;
 
 namespace RailwayReservation.Interface.Service
 {

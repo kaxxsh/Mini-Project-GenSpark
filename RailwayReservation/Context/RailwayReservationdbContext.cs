@@ -14,6 +14,8 @@ namespace RailwayReservation.Context
         public DbSet<Train> Trains { get; set; }
         public DbSet<Model.Domain.Route> Routes { get; set; }
         public DbSet<Seat> Seats { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Passenger> Passengers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -57,6 +59,51 @@ namespace RailwayReservation.Context
                 .HasMany(r => r.Stations)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("RouteStations"));
+
+            // Configuring the Passenger entity
+            modelBuilder.Entity<Passenger>()
+                .HasKey(p => p.PassengerId);
+
+            modelBuilder.Entity<Passenger>()
+                .HasOne(p => p.Seat)
+                .WithMany()
+                .HasForeignKey(p => p.SeatId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configuring the Seat entity
+            modelBuilder.Entity<Seat>()
+                .HasKey(s => s.SeatId);
+
+            // Configuring the Ticket entity
+            modelBuilder.Entity<Ticket>()
+                .HasKey(t => t.TicketId);
+
+            modelBuilder.Entity<Ticket>()
+                .HasMany(t => t.Passengers)
+                .WithOne()
+                .HasForeignKey(p => p.TicketId);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Train)
+                .WithMany()
+                .HasForeignKey(t => t.TrainId);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.SourceStation)
+                .WithMany()
+                .HasForeignKey(t => t.Source)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.DestinationStation)
+                .WithMany()
+                .HasForeignKey(t => t.Destination)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

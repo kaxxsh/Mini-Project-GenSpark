@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
-using RailwayReservation.Migrations.RailwayReservationdb;
 using RailwayReservation.Model.Domain;
+using RailwayReservation.Model.Dtos.Ticket;
 using RailwayReservation.Model.Dtos.Train;
 using RailwayReservation.Model.Dtos.Train.Station;
+using RailwayReservation.Model.Enum.Ticket;
 using RailwayReservation.Model.Error;
 
 namespace RailwayReservation.Controllers.V1
@@ -16,12 +16,14 @@ namespace RailwayReservation.Controllers.V1
         private readonly IStationService _station;
         private readonly IUserService _user;
         private readonly ITrainService _train;
+        private readonly ITicketService _ticket;
 
-        public UserController(IStationService station, IUserService user, ITrainService train)
+        public UserController(IStationService station, IUserService user, ITrainService train, ITicketService ticket)
         {
             _station = station;
             _user = user;
             _train = train;
+            _ticket = ticket;
         }
 
         [HttpGet]
@@ -59,7 +61,42 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
-        
+        [HttpGet]
+        [Route("User/Ticket/{id}")]
+        [ProducesResponseType(typeof(List<TicketResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetBookedTicketbyUser(Guid id)
+        {
+            try
+            {
+                var data = await _ticket.GetBookedTicketbyUser(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("User/Ticket/Cancel/{id}")]
+        [ProducesResponseType(typeof(List<TicketResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCanceledTicketByUser(Guid id)
+        {
+            try
+            {
+                var data = await _ticket.GetCanceledTicketByUser(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("Station")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
@@ -96,14 +133,14 @@ namespace RailwayReservation.Controllers.V1
 
         [HttpGet]
         [Route("Train")]
-        [ProducesResponseType(typeof(List<TrainResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTrain()
+        public async Task<IActionResult> GetTrainByQuiry(String From,String To,DateTime date)
         {
             try
             {
-                var data = await _train.GetAll();
+                var data = await _train.GetTrain(From, To, date);
                 return Ok(data);
             }
             catch (Exception ex)
@@ -122,6 +159,60 @@ namespace RailwayReservation.Controllers.V1
             try
             {
                 var data = await _train.GetById(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("Ticket/{id}")]
+        [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetTicket(Guid id)
+        {
+            try
+            {
+                var data = await _ticket.GetById(id);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("Ticket")]
+        [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddTicket(TicketRequestDto ticket)
+        {
+            try
+            {
+                var data = await _ticket.Add(ticket);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("Ticket/Cancel/{id}")]
+        [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateTicket(Guid id, TicketStatus ticket)
+        {
+            try
+            {
+                var data = await _ticket.CancelTicket(id, ticket);
                 return Ok(data);
             }
             catch (Exception ex)
