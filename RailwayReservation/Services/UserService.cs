@@ -6,16 +6,31 @@ using RailwayReservation.Model.Dtos.Auth.User;
 
 namespace RailwayReservation.Services
 {
+    /// <summary>
+    /// Service class for managing user-related operations.
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly IUserRepository _user;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserService"/> class.
+        /// </summary>
+        /// <param name="user">The user repository.</param>
+        /// <param name="mapper">The mapper.</param>
         public UserService(IUserRepository user, IMapper mapper)
         {
             _user = user;
             _mapper = mapper;
         }
+
+        /// <summary>
+        /// Adds money to the user's wallet balance.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <param name="Amount">The amount to add.</param>
+        /// <returns>The updated user object.</returns>
         public async Task<User> AddMoney(Guid id, double Amount)
         {
             try
@@ -35,6 +50,10 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Gets all users.
+        /// </summary>
+        /// <returns>A list of user response DTOs.</returns>
         public async Task<List<UserResponseDto>> GetAll()
         {
             try
@@ -49,6 +68,11 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Gets a user by ID.
+        /// </summary>
+        /// <param name="id">The user ID.</param>
+        /// <returns>The user response DTO.</returns>
         public async Task<UserResponseDto> GetById(Guid id)
         {
             try
@@ -65,7 +89,5 @@ namespace RailwayReservation.Services
                 throw new Exception(ex.Message);
             }
         }
-
-
     }
 }

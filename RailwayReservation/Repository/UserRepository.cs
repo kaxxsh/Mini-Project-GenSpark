@@ -13,6 +13,12 @@ namespace RailwayReservation.Repository
         {
             _context = context;
         }
+
+        /// <summary>
+        /// Adds a new user to the repository.
+        /// </summary>
+        /// <param name="item">The user to add.</param>
+        /// <returns>The added user.</returns>
         public async Task<User> Add(User item)
         {
             try
@@ -31,6 +37,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Deletes a user from the repository.
+        /// </summary>
+        /// <param name="key">The key of the user to delete.</param>
+        /// <returns>The deleted user, or null if the user was not found.</returns>
         public async Task<User> Delete(Guid key)
         {
             try
@@ -54,6 +65,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Retrieves a user from the repository.
+        /// </summary>
+        /// <param name="key">The key of the user to retrieve.</param>
+        /// <returns>The retrieved user.</returns>
         public async Task<User> Get(Guid key)
         {
             try
@@ -71,6 +87,10 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Retrieves all users from the repository.
+        /// </summary>
+        /// <returns>A collection of all users.</returns>
         public async Task<IEnumerable<User>> GetAll()
         {
             try
@@ -87,6 +107,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Updates a user in the repository.
+        /// </summary>
+        /// <param name="item">The user to update.</param>
+        /// <returns>The updated user.</returns>
         public async Task<User> Update(User item)
         {
             try

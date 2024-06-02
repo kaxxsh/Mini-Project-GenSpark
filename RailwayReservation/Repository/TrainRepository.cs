@@ -8,15 +8,27 @@ using System.Threading.Tasks;
 
 namespace RailwayReservation.Repository
 {
+    /// <summary>
+    /// Repository class for managing train data.
+    /// </summary>
     public class TrainRepository : ITrainRepository
     {
         private readonly RailwayReservationdbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TrainRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public TrainRepository(RailwayReservationdbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Adds a new train to the database.
+        /// </summary>
+        /// <param name="item">The train to add.</param>
+        /// <returns>The added train.</returns>
         public async Task<Train> Add(Train item)
         {
             try
@@ -31,6 +43,10 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Adds multiple seats to the database.
+        /// </summary>
+        /// <param name="seats">The seats to add.</param>
         public async Task AddSeats(IEnumerable<Seat> seats)
         {
             try
@@ -44,6 +60,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Deletes a train from the database.
+        /// </summary>
+        /// <param name="key">The key of the train to delete.</param>
+        /// <returns>The deleted train.</returns>
         public async Task<Train> Delete(Guid key)
         {
             try
@@ -71,6 +92,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets a train from the database by its key.
+        /// </summary>
+        /// <param name="key">The key of the train to get.</param>
+        /// <returns>The fetched train.</returns>
         public async Task<Train> Get(Guid key)
         {
             try
@@ -91,6 +117,10 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets all trains from the database.
+        /// </summary>
+        /// <returns>The fetched trains.</returns>
         public async Task<IEnumerable<Train>> GetAll()
         {
             try
@@ -109,6 +139,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets a seat from the database by its ID.
+        /// </summary>
+        /// <param name="seatId">The ID of the seat to get.</param>
+        /// <returns>The fetched seat.</returns>
         public async Task<Seat> GetSeat(Guid seatId)
         {
             try
@@ -125,6 +160,10 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Removes multiple seats from the database.
+        /// </summary>
+        /// <param name="seats">The seats to remove.</param>
         public async Task RemoveSeats(IEnumerable<Seat> seats)
         {
             try
@@ -138,6 +177,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Updates a train in the database.
+        /// </summary>
+        /// <param name="item">The train to update.</param>
+        /// <returns>The updated train.</returns>
         public async Task<Train> Update(Train item)
         {
             try
@@ -165,6 +209,9 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Saves changes to the database.
+        /// </summary>
         public async Task SaveAsync()
         {
             try

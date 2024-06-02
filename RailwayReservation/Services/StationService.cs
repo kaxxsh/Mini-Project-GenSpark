@@ -17,6 +17,11 @@ namespace RailwayReservation.Services
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Add a new station.
+        /// </summary>
+        /// <param name="station">The station to add.</param>
+        /// <returns>The added station.</returns>
         public async Task<StationDto> Add(StationRequestDto station)
         {
             try
@@ -31,6 +36,11 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Delete a station by ID.
+        /// </summary>
+        /// <param name="id">The ID of the station to delete.</param>
+        /// <returns>The deleted station.</returns>
         public async Task<StationDto> Delete(Guid id)
         {
             try
@@ -44,6 +54,11 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Get a station by ID.
+        /// </summary>
+        /// <param name="id">The ID of the station to get.</param>
+        /// <returns>The retrieved station.</returns>
         public async Task<StationResponseDto> Get(Guid id)
         {
             try
@@ -57,6 +72,10 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Get all stations.
+        /// </summary>
+        /// <returns>A list of all stations.</returns>
         public async Task<List<StationResponseDto>> GetAll()
         {
             try
@@ -70,6 +89,12 @@ namespace RailwayReservation.Services
             }
         }
 
+        /// <summary>
+        /// Update a station by ID.
+        /// </summary>
+        /// <param name="id">The ID of the station to update.</param>
+        /// <param name="station">The updated station data.</param>
+        /// <returns>The updated station.</returns>
         public async Task<StationDto> Update(Guid id, StationRequestDto station)
         {
             try

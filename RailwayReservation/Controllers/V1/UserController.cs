@@ -26,6 +26,9 @@ namespace RailwayReservation.Controllers.V1
             _ticket = ticket;
         }
 
+        /// <summary>
+        /// Get all users.
+        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -43,6 +46,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get a user by ID.
+        /// </summary>
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
@@ -61,6 +67,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get booked tickets by user ID.
+        /// </summary>
         [HttpGet]
         [Route("User/Ticket/{id}")]
         [ProducesResponseType(typeof(List<TicketResponseDto>), StatusCodes.Status200OK)]
@@ -79,6 +88,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get canceled tickets by user ID.
+        /// </summary>
         [HttpGet]
         [Route("User/Ticket/Cancel/{id}")]
         [ProducesResponseType(typeof(List<TicketResponseDto>), StatusCodes.Status200OK)]
@@ -97,6 +109,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get all stations.
+        /// </summary>
         [HttpGet]
         [Route("Station")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
@@ -114,6 +129,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get a station by ID.
+        /// </summary>
         [HttpGet]
         [Route("Station/{id}")]
         [ProducesResponseType(typeof(StationResponseDto), StatusCodes.Status200OK)]
@@ -131,12 +149,15 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get trains by query parameters.
+        /// </summary>
         [HttpGet]
         [Route("Train")]
         [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTrainByQuiry(String From,String To,DateTime date)
+        public async Task<IActionResult> GetTrainByQuiry(String From, String To, DateTime date)
         {
             try
             {
@@ -149,6 +170,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get a train by ID.
+        /// </summary>
         [HttpGet]
         [Route("Train/{id}")]
         [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
@@ -167,6 +191,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Get a ticket by ID.
+        /// </summary>
         [HttpGet]
         [Route("Ticket/{id}")]
         [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
@@ -185,6 +212,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Add a new ticket.
+        /// </summary>
         [HttpPost]
         [Route("Ticket")]
         [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
@@ -203,6 +233,9 @@ namespace RailwayReservation.Controllers.V1
             }
         }
 
+        /// <summary>
+        /// Update a ticket status.
+        /// </summary>
         [HttpPut]
         [Route("Ticket/Cancel/{id}")]
         [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]

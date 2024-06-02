@@ -4,19 +4,33 @@ using RailwayReservation.Interface.Repository;
 using RailwayReservation.Model.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RailwayReservation.Repository
 {
+    /// <summary>
+    /// Repository class for managing station-related data operations.
+    /// </summary>
     public class StationRepository : IStationRepository
     {
         private readonly RailwayReservationdbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StationRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
         public StationRepository(RailwayReservationdbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Adds a new station to the database.
+        /// </summary>
+        /// <param name="item">The station to add.</param>
+        /// <returns>The added station.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while adding the station.</exception>
         public async Task<Station> Add(Station item)
         {
             try
@@ -31,6 +45,12 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Deletes a station from the database.
+        /// </summary>
+        /// <param name="key">The unique identifier of the station to delete.</param>
+        /// <returns>The deleted station.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while deleting the station.</exception>
         public async Task<Station> Delete(Guid key)
         {
             try
@@ -50,6 +70,12 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets a station by its unique identifier.
+        /// </summary>
+        /// <param name="key">The unique identifier of the station to retrieve.</param>
+        /// <returns>The retrieved station.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving the station.</exception>
         public async Task<Station> Get(Guid key)
         {
             try
@@ -67,6 +93,11 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets all stations from the database.
+        /// </summary>
+        /// <returns>A list of all stations.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving the stations.</exception>
         public async Task<IEnumerable<Station>> GetAll()
         {
             try
@@ -79,6 +110,12 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Updates an existing station in the database.
+        /// </summary>
+        /// <param name="item">The station to update.</param>
+        /// <returns>The updated station.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while updating the station.</exception>
         public async Task<Station> Update(Station item)
         {
             try
@@ -93,6 +130,12 @@ namespace RailwayReservation.Repository
             }
         }
 
+        /// <summary>
+        /// Gets a list of stations by their unique identifiers.
+        /// </summary>
+        /// <param name="stationIds">The list of unique identifiers of the stations to retrieve.</param>
+        /// <returns>A list of stations.</returns>
+        /// <exception cref="Exception">Thrown when an error occurs while retrieving the stations.</exception>
         public async Task<List<Station>> GetStationsByIds(List<Guid> stationIds)
         {
             try
