@@ -171,6 +171,10 @@ namespace RailwayReservation.Repository
             {
                 await _context.SaveChangesAsync();
             }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error saving changes: {ex.Message}");
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Error saving changes: {ex.Message}");

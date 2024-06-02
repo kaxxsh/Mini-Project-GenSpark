@@ -27,7 +27,7 @@ namespace RailwayReservation.Repository
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while adding station: " + e.Message);
             }
         }
 
@@ -46,7 +46,7 @@ namespace RailwayReservation.Repository
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while deleting station: " + e.Message);
             }
         }
 
@@ -55,11 +55,15 @@ namespace RailwayReservation.Repository
             try
             {
                 var station = await _context.Stations.FindAsync(key);
+                if (station == null)
+                {
+                    throw new Exception("Station not found");
+                }
                 return station;
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while getting station: " + e.Message);
             }
         }
 
@@ -71,7 +75,7 @@ namespace RailwayReservation.Repository
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while getting all stations: " + e.Message);
             }
         }
 
@@ -85,7 +89,7 @@ namespace RailwayReservation.Repository
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while updating station: " + e.Message);
             }
         }
 
@@ -99,7 +103,7 @@ namespace RailwayReservation.Repository
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while getting stations by IDs: " + e.Message);
             }
         }
     }

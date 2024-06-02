@@ -38,6 +38,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _user.AddMoney(id, Amount);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -57,6 +61,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _station.Add(station);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -74,6 +82,10 @@ namespace RailwayReservation.Controllers.V1
             {
                 var data = await _station.Update(id, station);
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -93,6 +105,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _station.Delete(id);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -110,6 +126,10 @@ namespace RailwayReservation.Controllers.V1
             {
                 var data = await _train.GetAll();
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -129,6 +149,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _train.Add(train);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -147,6 +171,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _train.Update(id, train);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -164,6 +192,10 @@ namespace RailwayReservation.Controllers.V1
             {
                 var data = await _train.Delete(id);
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -184,6 +216,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _ticket.GetAll();
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -201,6 +237,10 @@ namespace RailwayReservation.Controllers.V1
             {
                 var data = await _ticket.Update(id, ticket);
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -220,6 +260,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _ticket.Delete(id);
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -238,6 +282,10 @@ namespace RailwayReservation.Controllers.V1
                 var data = await _ticket.PendingTicket();
                 return Ok(data);
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -249,12 +297,16 @@ namespace RailwayReservation.Controllers.V1
         [ProducesResponseType(typeof(TicketResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ApproveTicket(Guid id,TicketStatus ticket)
+        public async Task<IActionResult> ApproveTicket(Guid id, TicketStatus ticket)
         {
             try
             {
-                var data = await _ticket.ApproveTicket(id,ticket);
+                var data = await _ticket.ApproveTicket(id, ticket);
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
@@ -273,6 +325,10 @@ namespace RailwayReservation.Controllers.V1
             {
                 var data = await _ticket.BookedTicket(TrainId);
                 return Ok(data);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

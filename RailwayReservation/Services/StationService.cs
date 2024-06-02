@@ -11,7 +11,7 @@ namespace RailwayReservation.Services
         private readonly IStationRepository _repository;
         private readonly IMapper _mapper;
 
-        public StationService(IStationRepository repository,IMapper mapper)
+        public StationService(IStationRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -75,10 +75,14 @@ namespace RailwayReservation.Services
             try
             {
                 var data = _mapper.Map<Station>(station);
-                if (data == null) return null;
+                if (data == null) throw new ArgumentNullException(nameof(data));
                 data.StationId = id;
                 data = await _repository.Update(data);
                 return _mapper.Map<StationDto>(data);
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception("Data cannot be null.", ex);
             }
             catch (Exception ex)
             {

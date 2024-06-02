@@ -21,6 +21,10 @@ namespace RailwayReservation.Repository
                 await _context.SaveChangesAsync();
                 return item;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error adding ticket: {ex.Message}");
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Error adding ticket: {ex.Message}");
@@ -40,6 +44,10 @@ namespace RailwayReservation.Repository
                 await _context.SaveChangesAsync();
                 return ticket;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error deleting ticket: {ex.Message}");
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Error deleting ticket: {ex.Message}");
@@ -52,6 +60,10 @@ namespace RailwayReservation.Repository
             {
                 var ticket = await _context.Tickets.Include(t => t.Passengers).FirstOrDefaultAsync(t => t.TicketId == key);
                 return ticket;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error getting ticket: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -66,6 +78,10 @@ namespace RailwayReservation.Repository
                 var tickets = await _context.Tickets.Include(t => t.Passengers).ToListAsync();
                 return tickets;
             }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error getting tickets: {ex.Message}");
+            }
             catch (Exception ex)
             {
                 throw new Exception($"Error getting tickets: {ex.Message}");
@@ -79,6 +95,10 @@ namespace RailwayReservation.Repository
                 _context.Tickets.Update(item);
                 await _context.SaveChangesAsync();
                 return item;
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new Exception($"Error updating ticket: {ex.Message}");
             }
             catch (Exception ex)
             {

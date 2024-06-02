@@ -54,6 +54,10 @@ namespace RailwayReservation.Services
             try
             {
                 var data = await _user.Get(id);
+                if (data == null)
+                {
+                    throw new Exception("User not found");
+                }
                 return _mapper.Map<UserResponseDto>(data);
             }
             catch (Exception ex)

@@ -21,9 +21,13 @@ namespace RailwayReservation.Repository
                 await _context.SaveChangesAsync();
                 return item;
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while adding the user.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred.", ex);
             }
         }
 
@@ -40,9 +44,13 @@ namespace RailwayReservation.Repository
                 await _context.SaveChangesAsync();
                 return user;
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while deleting the user.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred.", ex);
             }
         }
 
@@ -53,9 +61,13 @@ namespace RailwayReservation.Repository
                 var user = await _context.Users.FindAsync(key);
                 return user;
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while retrieving the user.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred.", ex);
             }
         }
 
@@ -65,9 +77,13 @@ namespace RailwayReservation.Repository
             {
                 return await _context.Users.ToListAsync();
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while retrieving all users.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred.", ex);
             }
         }
 
@@ -79,9 +95,13 @@ namespace RailwayReservation.Repository
                 await _context.SaveChangesAsync();
                 return item;
             }
-            catch (Exception e)
+            catch (DbUpdateException ex)
             {
-                throw new Exception(e.Message);
+                throw new Exception("Error occurred while updating the user.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred.", ex);
             }
         }
     }
