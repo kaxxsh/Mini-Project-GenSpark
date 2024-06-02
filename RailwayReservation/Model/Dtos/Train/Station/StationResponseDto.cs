@@ -8,5 +8,6 @@ namespace RailwayReservation.Model.Dtos.Train.Station
         public string StationCode { get; set; }
         public StationType StationType { get; set; }
         public int Pincode { get; set; }
+        public Guid StationId { get; set; }
     }
 }

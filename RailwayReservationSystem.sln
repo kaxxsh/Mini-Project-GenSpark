@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RailwayReservation", "RailwayReservation\RailwayReservation.csproj", "{207E6963-D617-4AD5-8651-6D824914EE12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RailwayReservation", "RailwayReservation\RailwayReservation.csproj", "{207E6963-D617-4AD5-8651-6D824914EE12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit-Testing", "Unit-Testing\Unit-Testing.csproj", "{FFB94656-E8F4-4040-8622-8408AC2176C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{207E6963-D617-4AD5-8651-6D824914EE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{207E6963-D617-4AD5-8651-6D824914EE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{207E6963-D617-4AD5-8651-6D824914EE12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB94656-E8F4-4040-8622-8408AC2176C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB94656-E8F4-4040-8622-8408AC2176C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB94656-E8F4-4040-8622-8408AC2176C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB94656-E8F4-4040-8622-8408AC2176C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
