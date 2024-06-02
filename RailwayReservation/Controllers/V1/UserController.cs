@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Ticket;
@@ -11,6 +12,7 @@ namespace RailwayReservation.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IStationService _station;
