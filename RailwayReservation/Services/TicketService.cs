@@ -5,10 +5,6 @@ using RailwayReservation.Model.Domain;
 using RailwayReservation.Model.Dtos.Ticket;
 using RailwayReservation.Model.Enum.Ticket;
 using RailwayReservation.Model.Enum.Train;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RailwayReservation.Services
 {
@@ -18,17 +14,20 @@ namespace RailwayReservation.Services
         private readonly ITrainRepository _trainRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _email;
 
         public TicketService(
             ITicketRepository ticketRepository,
             ITrainRepository trainRepository,
             IUserRepository userRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IEmailSender email)
         {
             _ticketRepository = ticketRepository;
             _trainRepository = trainRepository;
             _userRepository = userRepository;
             _mapper = mapper;
+            _email = email;
         }
 
         public async Task<TicketResponseDto> Add(TicketRequestDto ticketRequestDto)
@@ -68,23 +67,29 @@ namespace RailwayReservation.Services
 
             if (ticket.UserId == null)
             {
-                var user = await _userRepository.Get(ticket.UserId);
-                if (user == null)
+                var ticketUser = await _userRepository.Get(ticket.UserId);
+                if (ticketUser == null)
                 {
                     throw new Exception("User not found");
                 }
 
-                if (user.WalletBalance < ticket.TotalAmount)
+                if (ticketUser.WalletBalance < ticket.TotalAmount)
                 {
                     throw new Exception("Insufficient balance");
                 }
 
-                user.WalletBalance -= ticket.TotalAmount;
-                await _userRepository.Update(user);
+                ticketUser.WalletBalance -= ticket.TotalAmount;
+                await _userRepository.Update(ticketUser);
                 ticket.PaymentStatus = PaymentStatus.Paid;
             }
 
             var result = await _ticketRepository.Add(ticket);
+
+            // Send email notification
+            var emailContent = CreateEmailContent(ticket, train);
+            var userEmail = await _userRepository.Get(ticket.UserId);
+            await _email.SendEmailAsync(userEmail.Email, "Ticket Booking Confirmation", emailContent);
+
             return _mapper.Map<TicketResponseDto>(result);
         }
 
@@ -112,11 +117,18 @@ namespace RailwayReservation.Services
                 {
                     passenger.SeatId = availableSeats.First().SeatId;
                     availableSeats.First().Status = SeatStatus.Booked;
-                    availableSeats.RemoveAt(0); 
+                    availableSeats.RemoveAt(0);
                 }
                 await _trainRepository.Update(train);
             }
+
             var result = await _ticketRepository.Update(ticket);
+
+            // Send email notification
+            var emailContent = CreateEmailContent(ticket, await _trainRepository.Get(ticket.TrainId));
+            var userEmail = await _userRepository.Get(ticket.UserId);
+            await _email.SendEmailAsync(userEmail.Email, "Ticket Approval Notification", emailContent);
+
             return _mapper.Map<TicketResponseDto>(result);
         }
 
@@ -157,6 +169,12 @@ namespace RailwayReservation.Services
             }
 
             var result = await _ticketRepository.Update(ticket);
+
+            // Send email notification
+            var emailContent = CreateEmailContent(ticket, await _trainRepository.Get(ticket.TrainId));
+            var userEmail = await _userRepository.Get(ticket.UserId);
+            await _email.SendEmailAsync(userEmail.Email, "Ticket Cancellation Notification", emailContent);
+
             return _mapper.Map<TicketResponseDto>(result);
         }
 
@@ -234,7 +252,41 @@ namespace RailwayReservation.Services
 
             var updatedTicket = _mapper.Map(ticketRequestDto, ticket);
             var result = await _ticketRepository.Update(updatedTicket);
+
+            // Send email notification
+            var emailContent = CreateEmailContent(updatedTicket, await _trainRepository.Get(ticket.TrainId));
+            var userEmail = await _userRepository.Get(ticket.UserId);
+            await _email.SendEmailAsync(userEmail.Email, "Ticket Update Notification", emailContent);
+
             return _mapper.Map<TicketResponseDto>(result);
+        }
+
+        private string CreateEmailContent(Ticket ticket, Train train)
+        {
+            return $@"
+                <html>
+                    <body>
+                        <h2>Ticket Confirmation</h2>
+                        <p><strong>PNR:</strong> {ticket.TicketId}</p>
+                        <p><strong>Train Name:</strong> {train.TrainName}</p>
+                        <p><strong>Source Station:</strong> {train.TrainRoute.SourceStation.StationName}</p>
+                        <p><strong>Destination Station:</strong> {train.TrainRoute.DestinationStation.StationName}</p>
+                        <p><strong>Journey Date:</strong> {ticket.JourneyDate:dd-MM-yyyy}</p>
+                        <p><strong>Booking Date:</strong> {ticket.BookingDate:dd-MM-yyyy}</p>
+                        <p><strong>Total Amount:</strong> {ticket.TotalAmount}</p>
+                        <p><strong>Payment Status:</strong> {ticket.PaymentStatus}</p>
+                        <p><strong>Ticket Status:</strong> {ticket.TicketStatus}</p>
+                        <h3>Passenger Details:</h3>
+                        <ul>
+                            {string.Join("", ticket.Passengers.Select(p => $@"
+                            <li>
+                                <strong>Name:</strong> {p.Name}, 
+                                <strong>Age:</strong> {p.Age}, 
+                                <strong>Seat:</strong> {(p.Seat?.SeatNumber != null ? p.Seat.SeatNumber : "Not Assigned")}
+                            </li>"))}
+                        </ul>
+                    </body>
+                </html>";
         }
     }
 }
