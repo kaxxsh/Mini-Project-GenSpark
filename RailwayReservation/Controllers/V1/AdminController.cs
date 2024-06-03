@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RailwayReservation.Interface.Service;
 using RailwayReservation.Model.Domain;
@@ -12,7 +12,7 @@ namespace RailwayReservation.Controllers.V1
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminController : ControllerBase
     {
         private readonly IStationService _station;
@@ -35,7 +35,7 @@ namespace RailwayReservation.Controllers.V1
         /// <param name="Amount">The amount of money to add.</param>
         /// <returns>The updated user object.</returns>
         [HttpPut]
-        [Route("{id}")]
+        [Route("AddMoney/{id}")]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]

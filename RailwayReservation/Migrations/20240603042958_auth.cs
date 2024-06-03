@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace RailwayReservation.Migrations.auth
+namespace RailwayReservation.Migrations
 {
     /// <inheritdoc />
     public partial class auth : Migration

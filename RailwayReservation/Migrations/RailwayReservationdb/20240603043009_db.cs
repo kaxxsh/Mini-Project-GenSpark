@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RailwayReservation.Migrations
+namespace RailwayReservation.Migrations.RailwayReservationdb
 {
     /// <inheritdoc />
     public partial class db : Migration
@@ -16,8 +16,8 @@ namespace RailwayReservation.Migrations
                 columns: table => new
                 {
                     StationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    StationCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     StationType = table.Column<int>(type: "int", nullable: false),
                     Pincode = table.Column<int>(type: "int", nullable: false)
                 },
@@ -31,7 +31,7 @@ namespace RailwayReservation.Migrations
                 columns: table => new
                 {
                     TrainId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TrainName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrainName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     TrainNumber = table.Column<int>(type: "int", nullable: false),
                     TrainType = table.Column<int>(type: "int", nullable: false),
                     TrainStatus = table.Column<int>(type: "int", nullable: false),
@@ -49,7 +49,7 @@ namespace RailwayReservation.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WalletBalance = table.Column<double>(type: "float", nullable: false)
@@ -98,9 +98,8 @@ namespace RailwayReservation.Migrations
                 columns: table => new
                 {
                     SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SeatNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SeatNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     TrainId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PassengerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -188,9 +187,10 @@ namespace RailwayReservation.Migrations
                 {
                     PassengerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TicketId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Gender = table.Column<int>(type: "int", nullable: false),
+                    SeatId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {

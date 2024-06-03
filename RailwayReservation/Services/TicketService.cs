@@ -65,23 +65,20 @@ namespace RailwayReservation.Services
                 passenger.TicketId = ticket.TicketId;
             }
 
-            if (ticket.UserId == null)
+            var ticketUser = await _userRepository.Get(ticket.UserId);
+            if (ticketUser == null)
             {
-                var ticketUser = await _userRepository.Get(ticket.UserId);
-                if (ticketUser == null)
-                {
-                    throw new Exception("User not found");
-                }
-
-                if (ticketUser.WalletBalance < ticket.TotalAmount)
-                {
-                    throw new Exception("Insufficient balance");
-                }
-
-                ticketUser.WalletBalance -= ticket.TotalAmount;
-                await _userRepository.Update(ticketUser);
-                ticket.PaymentStatus = PaymentStatus.Paid;
+                throw new Exception("User not found");
             }
+
+            if (ticketUser.WalletBalance < ticket.TotalAmount)
+            {
+                throw new Exception("Insufficient balance");
+            }
+
+            ticketUser.WalletBalance -= ticket.TotalAmount;
+            await _userRepository.Update(ticketUser);
+            ticket.PaymentStatus = PaymentStatus.Paid;
 
             var result = await _ticketRepository.Add(ticket);
 
@@ -92,6 +89,7 @@ namespace RailwayReservation.Services
 
             return _mapper.Map<TicketResponseDto>(result);
         }
+
 
         public async Task<TicketResponseDto> ApproveTicket(Guid id, TicketStatus ticketStatus)
         {

@@ -69,12 +69,6 @@ namespace RailwayReservation.Controllers.V1
         {
             try
             {
-                // Check if the request body is valid
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-
                 // Call the Login method of the IAuthService to log in the user
                 var token = await _authService.Login(loginRequestDto);
                 if (!string.IsNullOrEmpty(token))

@@ -159,11 +159,11 @@ namespace RailwayReservation.Controllers.V1
         [ProducesResponseType(typeof(TrainResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTrainByQuiry(String From, String To, DateTime date)
+        public async Task<IActionResult> GetTrainByQuiry(String From, String To)
         {
             try
             {
-                var data = await _train.GetTrain(From, To, date);
+                var data = await _train.GetTrain(From, To);
                 return Ok(data);
             }
             catch (Exception ex)

@@ -109,7 +109,7 @@ namespace RailwayReservation.Services
             }
         }
 
-        public async Task<List<TrainResponseDto>> GetTrain(string From, string To, DateTime date)
+        public async Task<List<TrainResponseDto>> GetTrain(string From, string To)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace RailwayReservation.Services
                     .Include(t => t.TrainRoute.SourceStation)
                     .Include(t => t.TrainRoute.DestinationStation)
                     .Include(t => t.Seats)
-                    .Where(t => t.TrainRoute.SourceStation.StationName == From && t.TrainRoute.DestinationStation.StationName == To)
+                    .Where(t => t.TrainRoute.SourceStation.StationName == From || t.TrainRoute.SourceStation.StationCode == From && t.TrainRoute.DestinationStation.StationName == To || t.TrainRoute.DestinationStation.StationCode == To)
                     .ToListAsync();
 
                 return _mapper.Map<List<TrainResponseDto>>(trains);

@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RailwayReservation.Context;
 
 #nullable disable
 
-namespace RailwayReservation.Migrations
+namespace RailwayReservation.Migrations.RailwayReservationdb
 {
     [DbContext(typeof(RailwayReservationdbContext))]
-    [Migration("20240531112822_db")]
-    partial class db
+    partial class RailwayReservationdbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,11 +31,15 @@ namespace RailwayReservation.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
+                    b.Property<int>("Gender")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("SeatId")
+                    b.Property<Guid?>("SeatId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TicketId")
@@ -92,12 +93,10 @@ namespace RailwayReservation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PassengerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SeatNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -123,11 +122,13 @@ namespace RailwayReservation.Migrations
 
                     b.Property<string>("StationCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("StationName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("StationType")
                         .HasColumnType("int");
@@ -200,7 +201,8 @@ namespace RailwayReservation.Migrations
 
                     b.Property<string>("TrainName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("TrainNumber")
                         .HasColumnType("int");
@@ -232,7 +234,8 @@ namespace RailwayReservation.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<double>("WalletBalance")
                         .HasColumnType("float");
@@ -262,8 +265,7 @@ namespace RailwayReservation.Migrations
                     b.HasOne("RailwayReservation.Model.Domain.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RailwayReservation.Model.Domain.Ticket", null)
                         .WithMany("Passengers")

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using RailwayReservation.Model.Enum.Train;
 
 namespace RailwayReservation.Model.Domain
@@ -7,6 +8,8 @@ namespace RailwayReservation.Model.Domain
     /// <summary>
     /// Represents a railway station with details such as name, code, type, and pincode.
     /// </summary>
+    [indexer: Index(nameof(StationCode), IsUnique = true)]
+    [indexer: Index(nameof(StationName), IsUnique = true)]
     public class Station
     {
         /// <summary>

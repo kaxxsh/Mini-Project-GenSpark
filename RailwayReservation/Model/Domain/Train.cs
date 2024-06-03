@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using RailwayReservation.Model.Enum.Train;
 
 namespace RailwayReservation.Model.Domain
@@ -8,6 +9,8 @@ namespace RailwayReservation.Model.Domain
     /// <summary>
     /// Represents a train with details such as name, number, type, status, total seats, available seats, fare, and route.
     /// </summary>
+
+    [indexer : Index("TrainNumber", IsUnique = true)]
     public class Train
     {
         /// <summary>

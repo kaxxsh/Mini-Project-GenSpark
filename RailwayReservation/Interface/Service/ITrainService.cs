@@ -10,6 +10,6 @@ namespace RailwayReservation.Interface.Service
         public Task<TrainResponseDto> Add(TrainRequestDto trainRequestDto);
         public Task<TrainResponseDto> Update(Guid id, TrainRequestDto trainRequestDto);
         public Task<TrainResponseDto> Delete(Guid id);
-        public Task<List<TrainResponseDto>> GetTrain(String From,String To, DateTime date);
+        public Task<List<TrainResponseDto>> GetTrain(String From,String To);
     }
 }
